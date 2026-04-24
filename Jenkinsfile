@@ -14,23 +14,15 @@ pipeline {
 
         stage('Pre-Clean') {
             steps {
-                sh "docker rm -f ${CONTAINER_NAME} || true"   // komunikat błędu jest normalny, potok idzie dalej
+                sh "docker rm -f ${CONTAINER_NAME} || true"
             }
         }
 
         stage('Build & Test') {
             steps {
-                // 1. Zbuduj obraz bldr (zawiera kod źródłowy i Maven w /app)
                 sh "docker build --target bldr -t ${BLDR_IMAGE} ."
-
-                // 2. Uruchom tymczasowy kontener NADAJĄC MU NAZWĘ, aby potem móc skopiować artefakty
                 sh "docker run --name build-${BUILD_NUMBER} ${BLDR_IMAGE} mvn clean package"
-                // Wykonuje kompilację ORAZ testy (bez -DskipTests) – w przypadku niepowodzenia potok zatrzyma się tutaj
-
-                // 3. Skopiuj katalog target z kontenera do workspace Jenkinsa
                 sh "docker cp build-${BUILD_NUMBER}:/app/target ./target"
-
-                // 4. Usuń tymczasowy kontener
                 sh "docker rm build-${BUILD_NUMBER}"
             }
         }
