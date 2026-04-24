@@ -20,9 +20,10 @@ pipeline {
         stage('Build BLDR & Artifact') {
             steps {
                 sh "docker build --target bldr -t ${BLDR_IMAGE} ."
-                sh "docker run --rm -v ${WORKSPACE}:/app -w /app ${BLDR_IMAGE} chmod +x mvnw"
-
-                sh "docker run --rm -v ${WORKSPACE}:/app -w /app ${BLDR_IMAGE} ./mvnw clean package -DskipTests"
+                
+                sh "ls -la" 
+                
+                sh "docker run --rm -v ${WORKSPACE}:/app -w /app ${BLDR_IMAGE} mvn clean package -DskipTests"
             }
         }
 
