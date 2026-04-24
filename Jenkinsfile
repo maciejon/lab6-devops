@@ -7,6 +7,7 @@ pipeline {
         CONTAINER_NAME = 'petclinic-sandbox'
         BLDR_IMAGE = "${IMAGE_NAME}-bldr:latest"
         TARGET_IMAGE = "${DOCKER_REGISTRY}/${IMAGE_NAME}:${BUILD_NUMBER}"
+        APP_PORT = '9090'
     }
 
     stages {
@@ -42,7 +43,7 @@ pipeline {
 
         stage('Deploy') {
             steps {
-                sh "docker run -d --name ${CONTAINER_NAME} -p 8080:8080 ${TARGET_IMAGE}"
+                sh "docker run -d --name ${CONTAINER_NAME} -p ${9090}:8080 ${TARGET_IMAGE}"
             }
         }
 
